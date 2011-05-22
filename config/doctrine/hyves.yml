@@ -1,0 +1,43 @@
+HyvesUser:
+  tableName: hyves_user
+  actAs: 
+    Timestampable:
+      created:
+        name: fetched_at
+      updated:
+        disabled: true
+  columns:
+    userid: { type: string(255) }
+    username: { type: string(255) }
+    created_at: { type: datetime, notnull: true }
+    raw: { type: string, notnull: true }
+
+HyvesWww:
+  tableName: hyves_www
+  actAs: 
+    Timestampable:
+      created:
+        name: fetched_at
+      updated:
+        disabled: true
+  columns:
+    status_update_id: { type: integer }
+    www_id: { type: string(255) }
+    userid: { type: string(255), notnull: true }
+    emotion: { type: string }
+    www_where: { type: string(255) }
+    created_at: { type: datetime, notnull: true }
+    raw: { type: string, notnull: true }
+  indexes:
+    www:
+      fields: [www_id]
+      type: unique  
+    identification:
+      fields: [userid]
+  relations:
+    StatusUpdate:
+      class:        StatusUpdate
+      local:        status_update_id
+      foreignType:  one
+      foreignAlias: HyvesWww
+      onDelete:     SET NULL 

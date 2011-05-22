@@ -1,0 +1,280 @@
+<?php
+
+class Addsocialmedia extends Doctrine_Migration_Base
+{
+
+  public function up()
+  {
+    
+    $this->createTable('status_update', array(
+      'id' => array(
+        'type' => 'integer', 
+        'length' => 8, 
+        'autoincrement' => true, 
+        'primary' => true
+      ), 
+      'message' => array(
+        'type' => 'string', 
+        'length' => NULL
+      ), 
+      'created_at' => array(
+        'notnull' => true, 
+        'type' => 'timestamp', 
+        'length' => 25
+      )
+    ), array(
+      'indexes' => array(), 
+      'primary' => array(
+        0 => 'id'
+      ), 
+      'collate' => 'utf8_unicode_ci', 
+      'charset' => 'utf8'
+    ));
+    $this->createTable('social_media_last_fetch', array(
+      'client' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => 128, 
+        'primary' => true
+      ), 
+      'class' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => 128, 
+        'primary' => true
+      ), 
+      'query_sha1' => array(
+        'type' => 'string', 
+        'length' => 40, 
+        'primary' => true
+      ), 
+      'value1' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'value2' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'fetched_at' => array(
+        'type' => 'datetime', 
+        'length' => NULL
+      )
+    ), array(
+      'indexes' => array(
+        'value1' => array(
+          'fields' => array(
+            0 => 'value1'
+          )
+        ), 
+        'value2' => array(
+          'fields' => array(
+            0 => 'value2'
+          )
+        )
+      ), 
+      'primary' => array(
+        0 => 'client', 
+        1 => 'class', 
+        2 => 'query_sha1'
+      ), 
+      'collate' => 'utf8_unicode_ci', 
+      'charset' => 'utf8'
+    ));
+    
+    $this->createTable('twitter_tweet', array(
+      'id' => array(
+        'type' => 'integer', 
+        'length' => 8, 
+        'autoincrement' => true, 
+        'primary' => true
+      ), 
+      'status_update_id' => array(
+        'type' => 'integer', 
+        'length' => 8
+      ), 
+      'tweet_id' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'user_id' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => 255
+      ), 
+      'screen_name' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => 255
+      ), 
+      'text' => array(
+        'type' => 'string', 
+        'length' => NULL
+      ), 
+      'source' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'created_at' => array(
+        'type' => 'datetime', 
+        'notnull' => true, 
+        'length' => NULL
+      ), 
+      'raw' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => NULL
+      ), 
+      'fetched_at' => array(
+        'notnull' => true, 
+        'type' => 'timestamp', 
+        'length' => 25
+      )
+    ), array(
+      'indexes' => array(
+        'tweet' => array(
+          'fields' => array(
+            0 => 'tweet_id'
+          ), 
+          'type' => 'unique'
+        ), 
+        'identification' => array(
+          'fields' => array(
+            0 => 'screen_name', 
+            1 => 'user_id'
+          )
+        )
+      ), 
+      'primary' => array(
+        0 => 'id'
+      ), 
+      'collate' => 'utf8_unicode_ci', 
+      'charset' => 'utf8'
+    ));
+    
+    $this->createTable('hyves_user', array(
+      'id' => array(
+        'type' => 'integer', 
+        'length' => 8, 
+        'autoincrement' => true, 
+        'primary' => true
+      ), 
+      'userid' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'username' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'created_at' => array(
+        'type' => 'datetime', 
+        'notnull' => true, 
+        'length' => NULL
+      ), 
+      'raw' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => NULL
+      ), 
+      'fetched_at' => array(
+        'notnull' => true, 
+        'type' => 'timestamp', 
+        'length' => 25
+      )
+    ), array(
+      'indexes' => array(), 
+      'primary' => array(
+        0 => 'id'
+      ), 
+      'collate' => 'utf8_unicode_ci', 
+      'charset' => 'utf8'
+    ));
+    $this->createTable('hyves_www', array(
+      'id' => array(
+        'type' => 'integer', 
+        'length' => 8, 
+        'autoincrement' => true, 
+        'primary' => true
+      ), 
+      'status_update_id' => array(
+        'type' => 'integer', 
+        'length' => 8
+      ), 
+      'www_id' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'userid' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => 255
+      ), 
+      'emotion' => array(
+        'type' => 'string', 
+        'length' => NULL
+      ), 
+      'www_where' => array(
+        'type' => 'string', 
+        'length' => 255
+      ), 
+      'created_at' => array(
+        'type' => 'datetime', 
+        'notnull' => true, 
+        'length' => NULL
+      ), 
+      'raw' => array(
+        'type' => 'string', 
+        'notnull' => true, 
+        'length' => NULL
+      ), 
+      'fetched_at' => array(
+        'notnull' => true, 
+        'type' => 'timestamp', 
+        'length' => 25
+      )
+    ), array(
+      'indexes' => array(
+        'www' => array(
+          'fields' => array(
+            0 => 'www_id'
+          ), 
+          'type' => 'unique'
+        ), 
+        'identification' => array(
+          'fields' => array(
+            0 => 'userid'
+          )
+        )
+      ), 
+      'primary' => array(
+        0 => 'id'
+      ), 
+      'collate' => 'utf8_unicode_ci', 
+      'charset' => 'utf8'
+    ));
+    
+    $this->createForeignKey('hyves_www', 'hyves_www_status_update_id_status_update_id', array(
+      'name' => 'hyves_www_status_update_id_status_update_id', 
+      'local' => 'status_update_id', 
+      'foreign' => 'id', 
+      'foreignTable' => 'status_update', 
+      'onUpdate' => NULL, 
+      'onDelete' => 'SET NULL'
+    ));
+  }
+
+  public function down()
+  {
+    $this->dropForeignKey('hyves_www', 'hyves_www_status_update_id_status_update_id');
+    $this->dropForeignKey('twitter_tweet', 'twitter_tweet_status_update_id_status_update_id');
+    
+    $this->dropTable('status_update');
+    $this->dropTable('social_media_last_fetch');
+    
+    $this->dropTable('twitter_tweet');
+    
+    $this->dropTable('hyves_user');
+    $this->dropTable('hyves_www');
+  }
+}

@@ -1,0 +1,149 @@
+# bsdmSocialMediaPlugin #
+
+## Introduction ##
+
+Integrate social media in the diem cms:
+
+* on the frontend, combine messages from different sources in one list (blog, news, twitter, facebook, hyves)
+* on the backend connect a service, using OAuth, to the application (twitter, facebook, hyves):
+  * using the API a message can be send to each service
+  * when creating a new news post or blog post, the option is available to directly post a status update message to the available services 
+
+## Installation ##
+
+Install from the project root.
+
+* For a git project
+
+        $ git submodule add git://github.com/beeldspraak/bsdmSocialMediaPlugin.git plugins/bsdmSocialMediaPlugin
+
+* For other projects, optionally add ".git" to ignore from the version control system
+
+        $ git clone git://github.com/beeldspraak/bsdmSocialMediaPlugin.git plugins/bsdmSocialMediaPlugin
+        
+* enable the plugin in _config/ProjectConfiguration.class.php_
+* install the _sfOAuthPhpPlugin_
+* build the model
+
+        $ php symfony doctrine:build --all-classes
+
+* insert the sql in the database, see as example: plugins/bddmSocialMediaPlugin/lib/migration/doctrine/addsocialmedia.php.example
+
+## Parts ##
+
+The following parts can be used to create the functionality described in the introduction.
+
+* model to store social media messages, define as required
+* StatusUpdate message:
+  * send the same message to several social media, see the _postInsert_ method of the _PluginStatusUpdate_ class
+  * send the message from the form to create a new news post or blog post:
+    * a widget and validator is available, include in the form:
+
+        # lib/form/doctrine/ArticlePostForm.class.php
+		class ArticlePostForm extends BaseArticlePostForm
+		{
+		
+		  public function configure()
+		  {
+		    $this->widgetSchema['status_update'] = new bsdmWidgetStatusUpdate();
+		    $this->validatorSchema['status_update'] = new bsdmValidatorStatusUpdate(array(
+		      'required' => false
+		    ));
+		  }
+		
+		  protected function doSave($con = null)
+		  {
+		    parent::doSave($con);
+		    
+		    // send a status update to 
+		    if ( isset($this->widgetSchema['status_update']) ) {
+		      $values = $this->getValue('status_update');
+		      if ( isset($values['clients']) && count($values['clients']) > 0 && isset($values['message']) ) {
+		        // clients are selected and a message is provided
+		        $statusUpdate = new StatusUpdate();
+		        $statusUpdate->setClients($values['clients']);
+		        $statusUpdate->setMessage($values['message']);
+		        $statusUpdate->save();
+		      }
+		    }
+		  }
+		}
+        
+    * add the field in the admin generator
+* interface _iSocialMedia_, implement the interface in the table of each social media model:
+  * _sync_: synchronise the messages to the database
+  * _send_: send a message using the API of the social media and save it to the database
+* backend admin:
+  * menu: Tools -> Connect to services
+    * connect the application to a service
+    * send a message
+    * see the user messages received directly from the API
+    * synchronise the message to the database
+* frontend, example implementation of an aggregated list:
+
+        # apps/front/modules/recent/actions/recent/components.class.php
+        class recentComponents extends myFrontModuleComponents
+        {
+          ...
+         
+          public function executeList (dmWebRequest $request)
+          {
+            $types = $this->types;
+            if ($request->isXmlHttpRequest()) {
+              if ($request->hasParameter('recent_filter')) {
+                // an ajax call from the filter
+                $types = array_keys(
+                array_filter($request->getParameter('recent_filter', array())));
+                $this->getUser()->setAttribute('recent_filter', $types);
+              } else {
+                // an ajax call from the pager
+                $types = $this->getUser()->getAttribute('recent_filter', 
+                $this->types);
+              }
+            } elseif ($type = $this->getTypeFromPage()) {
+              // filter type from the url
+              $types = array($type);
+            }
+            
+            // configure the models for the aggregate pager
+            $dmDoctrineAggregatePager = new dmDoctrineAggregatePager();
+            foreach ($types as $type) {
+              switch ($type) {
+                case 'news':
+                case 'blog':
+                  $options = array('column' => 'type', 'filter' => array($type), 
+                  'prefix' => 'Bsdm', 'suffix' => 'Post', 'ucfirst' => true);
+                  $dmDoctrineAggregatePager->addModel('Bsdm' . ucfirst($type) . 'Post', 
+                  $options);
+                  break;
+                case 'twitter':
+                  $dmDoctrineAggregatePager->addModel('TwitterTweet');
+                  break;
+                case 'hyves':
+                  $dmDoctrineAggregatePager->addModel('HyvesWww');
+                  break;
+              }
+            }
+            $page = $request->getParameter('page');
+            $dmDoctrineAggregatePager->setSortBy('created_at', 'DESC');
+            $dmDoctrineAggregatePager->setMaxPerPage($this->maxPerPage);
+            $dmDoctrineAggregatePager->setPage(null === $page ? $this->page : $page);
+            $dmDoctrineAggregatePager->init();
+            
+            // create the view pager
+            $this->articlePager = $this->getService('front_pager_view')
+              ->setPager($dmDoctrineAggregatePager)
+              ->setOption('navigation_top', $this->navTop)
+              ->setOption('navigation_bottom', $this->navBottom)
+              ->setOption('widget_id', dmArray::get($this->dm_widget, 'id'))
+              ->setOption('ajax', true);
+          }
+          ...
+        }
+
+## TODO ##
+
+* dmDoctrineAggregatePager:
+  * option for the maximum amount of list items, when using for a list of recent items this is the maximum amount of items from the history that will be included in the list
+  * update method _addModel_ to add a Doctrine_Query to get the list for the model 
+  * update method _createSqlQueries_ to transform the Doctrine_Query for each model to sql instead of generating the sql

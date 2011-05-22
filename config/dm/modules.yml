@@ -1,0 +1,5 @@
+Tools:
+  social-media:     # social media group
+    services:       # services module
+      name:         Connect to services
+      credentials:  social_media_services

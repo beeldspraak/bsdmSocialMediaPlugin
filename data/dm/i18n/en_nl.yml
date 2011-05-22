@@ -1,0 +1,36 @@
+# bsdmSocialMediaPlugin
+# config/dm/modules.yml
+"Connect to services": "Verbinden met services"
+# modules/servicesAdmin/actions/actions.class.php
+"Synced twitter tweets, %s tweets added.": "Twitter tweets gesynchroniseerd, %s tweets toegevoegd."
+"Synced twitter tweets, no tweets added.": "Twitter tweets gesynchroniseerd, geen tweets toegevoegd."
+"Synced hyves WieWatWaar's, %s WieWatWaar's added.": "Hyves WieWatWaar's gesynchroniseerd, %s WieWatWaar's toegevoegd."
+"Synced hyves WieWatWaar's, no WieWatWaar's added.": "Hyves WieWatWaar's gesynchroniseerd, geen WieWatWaar's toegevoegd."
+"Tweet message is succesfully send with the API and saved, it has id: %s": "Twitter bericht is succesvol verstuurd met de API en opgeslagen, het bericht heeft id: %s"
+"WieWatWaar message is succesfully send with the API and saved, it has id: %s": "WieWatWaar bericht is succesvol verstuurd met de API en opgeslagen, het bericht heeft id: %s"
+# modules/servicesAdmin/templates/indexSuccess.php
+"Connected services": "Gekoppelde services"
+"Unconnected services": "Niet gekoppelde services"
+# modules/servicesAdmin/templates/messageSuccess.php
+"message": "bericht"
+"Status message": "Status bericht"
+# modules/servicesAdmin/templates/user_timelineSuccess.php
+"No status messages found": "Geen status berichten gevonden"
+"Date/time": "Datum/tijd"
+"Source": "Bron"
+"Where": "Waar"
+# modules/servicesAdmin/templates/_list_tr_X
+"Disconnect": "Ontkoppel"
+"Connect": "Koppel"
+# modules/servicesAdmin/templates/_list_tr_facebook
+"View status updates": "Bekijk status updates"
+"New status update": "Nieuwe status update"
+"Synchronise status updates": "Synchroniseer status updates"
+# modules/servicesAdmin/templates/_list_tr_hyves
+"View WieWatWaar's": "Bekijk WieWatWaar's"
+"New WieWatWaar": "Nieuwe WieWatWaar"
+"Synchronise WieWatWaar's": "Synchroniseer WieWatWaar's"
+# modules/servicesAdmin/templates/_list_tr_twitter
+"View user timeline": "Bekijk user timeline"
+"New tweet": "Nieuwe tweet"
+"Synchronise tweets": "Synchroniseer tweets"

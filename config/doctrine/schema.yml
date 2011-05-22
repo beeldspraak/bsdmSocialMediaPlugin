@@ -1,0 +1,23 @@
+StatusUpdate:
+  tableName: status_update
+  actAs:
+    Timestampable:
+      updated:
+        disabled: true
+  columns:
+    message: { type: string }
+  
+SocialMediaLastFetch:
+  tableName: social_media_last_fetch
+  columns:
+    client: { type: string(128), primary: true } # see clients in oauth.yml
+    class:  { type: string(128), primary: true } # TwitterTweet, HyvesWww
+    query_sha1: { type: string(40), primary: true }
+    value1: { type: string(255) } # optional fe. screen_name
+    value2: { type: string(255) } # optional fe. user_id
+    fetched_at: { type: datetime }
+  indexes:
+    value1:
+      fields: [value1]
+    value2:
+      fields: [value2]      

@@ -1,0 +1,30 @@
+TwitterTweet:
+  tableName: twitter_tweet
+  actAs: 
+    Timestampable:
+      created:
+        name: fetched_at
+      updated:
+        disabled: true
+  columns:
+    status_update_id: { type: integer }
+    tweet_id: { type: string(255) }
+    user_id: { type: string(255), notnull: true }
+    screen_name: { type: string(255), notnull: true }
+    text: { type: string }
+    source: { type: string(255) }
+    created_at: { type: datetime, notnull: true }
+    raw: { type: string, notnull: true }
+  indexes:
+    tweet:
+      fields: [tweet_id]
+      type: unique
+    identification:
+      fields: [screen_name,user_id]
+  relations:
+    StatusUpdate:
+      class:        StatusUpdate
+      local:        status_update_id
+      foreignType:  one
+      foreignAlias: TwitterTweet
+      onDelete:     SET NULL
